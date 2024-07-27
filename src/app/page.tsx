@@ -52,7 +52,7 @@ const HomePage = () => {
             fontWeight: "bold",
           }}
         >
-          外部サイト表示中
+          対象のWebサイト
         </div>
         <iframe
           ref={iframeRef}
