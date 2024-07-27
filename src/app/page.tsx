@@ -57,7 +57,7 @@ const HomePage = () => {
         <iframe
           ref={iframeRef}
           title="sample.html"
-          src="/sample.html"
+          src="https://yuhi-sa.github.io/color-change-sample/sample.html"
           style={{ width: "100%", height: "1000px", border: "none" }}
         ></iframe>
       </div>
