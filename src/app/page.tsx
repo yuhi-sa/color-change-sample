@@ -1,95 +1,68 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+import { useRef, useState } from "react";
+import ColorPickerComponent from "./components/ColorPicker";
 
-export default function Home() {
+const HomePage = () => {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [color, setColor] = useState("rgba(47, 119, 150, 0.7)");
+
+  const handleChangeColor = (newColor: string) => {
+    setColor(newColor);
+    if (iframeRef.current) {
+      const iframeDocument = iframeRef.current.contentDocument;
+      if (iframeDocument) {
+        try {
+          const elementsToChange = [
+            ".header",
+            ".footer",
+            ".section",
+            ".cta-button",
+          ];
+          elementsToChange.forEach((selector) => {
+            const targetElements = iframeDocument.querySelectorAll(selector);
+            targetElements.forEach((targetElement) => {
+              (targetElement as HTMLElement).style.backgroundColor = newColor;
+            });
+          });
+        } catch (error) {
+          console.error("Error accessing iframe content:", error);
+        }
+      } else {
+        console.log("Iframe document not accessible");
+      }
+    }
+  };
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div>
+      <h1>Color Picker Example</h1>
+      <ColorPickerComponent onChangeColor={handleChangeColor} />
+      <div
+        style={{
+          border: "2px solid #ddd",
+          borderRadius: "8px",
+          padding: "10px",
+          backgroundColor: "#f9f9f9",
+        }}
+      >
+        <div
+          style={{
+            textAlign: "center",
+            marginBottom: "10px",
+            fontWeight: "bold",
+          }}
+        >
+          外部サイト表示中
         </div>
+        <iframe
+          ref={iframeRef}
+          title="sample.html"
+          src="/sample.html"
+          style={{ width: "100%", height: "1000px", border: "none" }}
+        ></iframe>
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </div>
   );
-}
+};
+
+export default HomePage;
